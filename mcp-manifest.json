@@ -1,0 +1,95 @@
+{
+  "name": "xapihub-mcp-extension",
+  "displayName": "XAPIHub Integration",
+  "description": "Connect to XAPIHub API and manage your projects, users, and resources directly from Cursor",
+  "version": "1.0.0",
+  "publisher": "xapihub",
+  "icon": "icon.png",
+  "categories": ["API", "Integration", "Productivity"],
+  "keywords": ["xapihub", "api", "integration", "projects", "users"],
+  "homepage": "https://xapihub.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xapihub/cursor-mcp-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/xapihub/cursor-mcp-extension/issues"
+  },
+  "license": "MIT",
+  "engines": {
+    "cursor": "^1.0.0"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "configuration": {
+    "type": "object",
+    "properties": {
+      "xapihub.baseUrl": {
+        "type": "string",
+        "default": "https://api-dev.xapihub.io",
+        "description": "XAPIHub API base URL",
+        "order": 1
+      },
+      "xapihub.token": {
+        "type": "string",
+        "description": "XAPIHub API authentication token (Bearer token)",
+        "order": 2,
+        "sensitive": true
+      }
+    },
+    "required": ["xapihub.baseUrl", "xapihub.token"]
+  },
+  "tools": [
+    {
+      "name": "get_current_user",
+      "displayName": "Get Current User",
+      "description": "Retrieve current user details from XAPIHub",
+      "category": "User Management"
+    },
+    {
+      "name": "test_xapihub_connection",
+      "displayName": "Test XAPIHub Connection",
+      "description": "Test connectivity to XAPIHub API",
+      "category": "Diagnostics"
+    }
+  ],
+  "server": {
+    "command": "node",
+    "args": ["dist/index.js"],
+    "transport": "stdio"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "xapihub.getCurrentUser",
+        "title": "Get Current User",
+        "category": "XAPIHub"
+      },
+      {
+        "command": "xapihub.testConnection",
+        "title": "Test Connection",
+        "category": "XAPIHub"
+      }
+    ],
+    "configuration": {
+      "title": "XAPIHub",
+      "properties": {
+        "xapihub.baseUrl": {
+          "type": "string",
+          "default": "https://api-dev.xapihub.io",
+          "description": "XAPIHub API base URL"
+        },
+        "xapihub.token": {
+          "type": "string",
+          "description": "XAPIHub API authentication token"
+        }
+      }
+    }
+  }
+}

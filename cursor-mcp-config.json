@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "xapihub": {
+      "command": "node",
+      "args": [
+        "C:\\Users\\pamit\\OneDrive\\Desktop\\X-venture\\Mcp\\mcp cursor\\dist\\index.js"
+      ],
+      "env": {
+        "XAPIHUB_BASE_URL": "https://api-dev.xapihub.io/platform/1.0.0",
+        "XAPIHUB_TOKEN": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJFR1BjRnQ5LWs4YmdFb2JkME11MlFLSGNkSnpoS05DSV81X0lrQkNIRTM4In0.eyJleHAiOjE3NTYyNDA0OTAsImlhdCI6MTc1NjIzOTg5MCwiYXV0aF90aW1lIjoxNzU2MjM5ODgwLCJqdGkiOiJmZGI2N2M5ZC1lZjcxLTQyZjAtOTcxOC1hZTBiMzRiY2RjN2QiLCJpc3MiOiJodHRwczovL2xvZ2luLWRldi54YXBpaHViLmlvL2NvbS94dmVudHVyZS9hdXRoL3JlYWxtcy9YdmVudHVyZSIsInN1YiI6ImY6NzEzZDMzNmItNDI5My00ZThhLWI0MzAtZGY5MjdiNTNlNmYxOnBhbWl0aHdlbGlrYWxhIiwidHlwIjoiQmVhcmVyIiwiYXpwIjoieGFwaS1kZXYiLCJzZXNzaW9uX3N0YXRlIjoiODY0Yjc1ODktMzE3Ni00NjAxLTlmOTEtMWIyZDNiNTM3MjkyIiwiYWxsb3dlZC1vcmlnaW5zIjpbIioiXSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwic2lkIjoiODY0Yjc1ODktMzE3Ni00NjAxLTlmOTEtMWIyZDNiNTM3MjkyIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJ1c2VyT3JnYW5pemF0aW9uUHJvZmlsZUlkIjoiNjZiMzhjMTQzMGQzZDY3NjkwNzJkNjI2IiwidXNlck9yZ2FuaXphdGlvbkFzc29jaWF0aW9uIjoiT1dORVIiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJwYW1pdGh3ZWxpa2FsYSIsInByb2plY3RJZHMiOltdLCJnaXZlbl9uYW1lIjoiUGFtaXRoIiwicmVhZE9ubHlPcmdhbml6YXRpb24iOiJmYWxzZSIsIm9yZ2FuaXphdGlvblR5cGUiOiJERUZBVUxUIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbInVtYV9hdXRob3JpemF0aW9uIiwib2ZmbGluZV9hY2Nlc3MiXX0sIm9yZ2FuaXphdGlvbiI6IjY2YjM4YzE0MzBkM2Q2NzY5MDcyZDYyNSIsIm5hbWUiOiJQYW1pdGggV2VsaWthbGEiLCJ1c2VyVHlwZSI6Ik9SR0FOSVpBVElPTl9PV05FUiIsInVzZXIiOiI2NTY2ZmY0YTdiMjcwMDZjMDg2ZTAxNDEiLCJmYW1pbHlfbmFtZSI6IldlbGlrYWxhIiwib3JnYW5pemF0aW9uVmlzaWJpbGl0eSI6IlBSSVZBVEUiLCJlbWFpbCI6InBhbWl0aHJveEBnbWFpbC5jb20iLCJ1c2VyU2NvcGVzIjoiIn0.DdkAIo9O5gL7vwI-I_OLXJwDtrVvwe7WCGpl3oo_K2Xe4D-huTi9veyWU1u35b1xRKoTW8gdT28NSZUSLgR6Wt1md-ooe5g1ozPsI39vN3I-3Xnu6B9gMlu8H7gZBPs4lV9ozczugj1z6QfDQVqKGXSxdh1mgRKaH0wRlFoKzYa5HOtqqs2cOgfRkOZE_hFruu3QnSo-GD2LnRFaXun_UHqSjbAP-_2yjlAYVevo7T6IQiVN0fmKYP31XT_xDnn9_6b0LUMhZYpdb4t2A0sqLse4BU3k8QRriJxnp5CouMNnbH9uH2K8P_lVwRhLS5ZOcy1maYwplyv1jX-xC2nvWQ"
+      },
+      "description": "XAPIHub API integration for Cursor",
+      "disabled": false
+    }
+  }
+}
