@@ -66,6 +66,58 @@ export class XAPIHubMCPServer {
               required: [],
             },
           },
+          {
+            name: 'get_recent_accessed_projects',
+            description: 'Get recent accessed projects for a specific organization from XAPIHub API',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                organizationId: {
+                  type: 'string',
+                  description: 'The organization ID to get projects for',
+                },
+              },
+              required: ['organizationId'],
+            },
+          },
+          {
+            name: 'search_projects',
+            description: 'Search for projects in an organization with comprehensive filtering and pagination options',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                organizationId: {
+                  type: 'string',
+                  description: 'The organization ID to search projects in',
+                },
+                searchString: {
+                  type: 'string',
+                  description: 'Search string to filter projects by name or description (optional)',
+                },
+                isAssign: {
+                  type: 'boolean',
+                  description: 'Whether to include assigned projects (default: true)',
+                },
+                page: {
+                  type: 'number',
+                  description: 'Page number for pagination (default: 0)',
+                },
+                size: {
+                  type: 'number',
+                  description: 'Number of results per page (default: 12)',
+                },
+                isDefault: {
+                  type: 'boolean',
+                  description: 'Whether to include default projects (default: false)',
+                },
+                sort: {
+                  type: 'string',
+                  description: 'Sort criteria (default: "name,asc")',
+                },
+              },
+              required: ['organizationId'],
+            },
+          },
         ],
       };
     });
@@ -84,6 +136,12 @@ export class XAPIHubMCPServer {
 
           case 'get_accessed_organizations':
             return await this.handleGetAccessedOrganizations();
+
+          case 'get_recent_accessed_projects':
+            return await this.handleGetRecentAccessedProjects(args);
+
+          case 'search_projects':
+            return await this.handleSearchProjects(args);
 
           default:
             throw new McpError(
@@ -190,6 +248,118 @@ export class XAPIHubMCPServer {
               success: false,
               error: result.error || 'Failed to retrieve accessed organizations',
               message: result.message
+            }, null, 2)
+          }
+        ]
+      };
+    }
+  }
+
+  private async handleGetRecentAccessedProjects(args: any) {
+    if (!args || !args.organizationId) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        'organizationId parameter is required'
+      );
+    }
+
+    const result = await this.xapiClient.getRecentAccessedProjects(args.organizationId);
+    
+    if (result.success && result.data) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              success: true,
+              message: 'Recent accessed projects retrieved successfully',
+              organizationId: args.organizationId,
+              projects: result.data.map(project => ({
+                id: project.id,
+                name: project.name,
+                description: project.description,
+                enableKanbanBoard: project.enableKanbanBoard
+              })),
+              count: result.data.length
+            }, null, 2)
+          }
+        ]
+      };
+    } else {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              success: false,
+              error: result.error || 'Failed to retrieve recent accessed projects',
+              message: result.message,
+              organizationId: args.organizationId
+            }, null, 2)
+          }
+        ]
+      };
+    }
+  }
+
+  private async handleSearchProjects(args: any) {
+    if (!args || !args.organizationId) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        'organizationId parameter is required'
+      );
+    }
+
+    const searchParams = {
+      organizationId: args.organizationId,
+      searchString: args.searchString || "",
+      isAssign: args.isAssign !== undefined ? args.isAssign : true,
+      page: args.page !== undefined ? args.page : 0,
+      size: args.size !== undefined ? args.size : 12,
+      isDefault: args.isDefault !== undefined ? args.isDefault : false,
+      sort: args.sort || "name,asc"
+    };
+
+    const result = await this.xapiClient.searchProjects(searchParams);
+    
+    if (result.success && result.data) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              success: true,
+              message: 'Project search completed successfully',
+              searchParams: searchParams,
+              pagination: {
+                totalElements: result.data.totalElements,
+                totalPages: result.data.totalPages,
+                size: result.data.size,
+                number: result.data.number,
+                first: result.data.first,
+                last: result.data.last
+              },
+              projects: result.data.content.map(project => ({
+                id: project.id,
+                name: project.name,
+                description: project.description,
+                enableKanbanBoard: project.enableKanbanBoard
+              })),
+              count: result.data.content.length
+            }, null, 2)
+          }
+        ]
+      };
+    } else {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              success: false,
+              error: result.error || 'Failed to search projects',
+              message: result.message,
+              searchParams: searchParams
             }, null, 2)
           }
         ]

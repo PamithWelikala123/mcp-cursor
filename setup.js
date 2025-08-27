@@ -24,7 +24,7 @@ async function setup() {
   try {
     // Get XAPIHub configuration
     console.log('📡 XAPIHub Configuration:');
-    const baseUrl =  'https://api-dev.xapihub.io/platform/1.0.0';
+    const baseUrl =  'https://api-dev.xapihub.io';
     const token = await askQuestion('Enter your XAPIHub Bearer Token: ');
 
     if (!token) {
