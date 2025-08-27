@@ -118,6 +118,73 @@ export class XAPIHubMCPServer {
               required: ['organizationId'],
             },
           },
+          {
+            name: 'get_catalogues',
+            description: 'Get catalogues for a specific organization and project from XAPIHub API',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                organizationId: {
+                  type: 'string',
+                  description: 'The organization ID',
+                },
+                projectId: {
+                  type: 'string',
+                  description: 'The project ID to get catalogues for',
+                },
+              },
+              required: ['organizationId', 'projectId'],
+            },
+          },
+          {
+            name: 'get_api_details',
+            description: 'Get API details for a specific catalogue collection using filter endpoint from XAPIHub API',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                organizationId: {
+                  type: 'string',
+                  description: 'The organization ID',
+                },
+                projectId: {
+                  type: 'string',
+                  description: 'The project ID',
+                },
+                catalogueId: {
+                  type: 'string',
+                  description: 'The catalogue ID',
+                },
+                collectionId: {
+                  type: 'string',
+                  description: 'The collection ID (rootCollectionId from catalogue)',
+                },
+                creators: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'Array of creator IDs to filter by (optional)',
+                },
+                collections: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'Array of collection IDs to filter by (optional)',
+                },
+                projects: {
+                  type: 'array',
+                  items: { type: 'string' },
+                  description: 'Array of project IDs to filter by (optional)',
+                },
+                page: {
+                  type: 'number',
+                  description: 'Page number for pagination (default: 0)',
+                },
+                size: {
+                  type: 'number',
+                  description: 'Number of results per page (default: 8)',
+                },
+              },
+              required: ['organizationId', 'projectId', 'catalogueId', 'collectionId'],
+            },
+          },
         ],
       };
     });
@@ -142,6 +209,12 @@ export class XAPIHubMCPServer {
 
           case 'search_projects':
             return await this.handleSearchProjects(args);
+
+          case 'get_catalogues':
+            return await this.handleGetCatalogues(args);
+
+          case 'get_api_details':
+            return await this.handleGetApiDetails(args);
 
           default:
             throw new McpError(
@@ -360,6 +433,127 @@ export class XAPIHubMCPServer {
               error: result.error || 'Failed to search projects',
               message: result.message,
               searchParams: searchParams
+            }, null, 2)
+          }
+        ]
+      };
+    }
+  }
+
+  private async handleGetCatalogues(args: any) {
+    if (!args || !args.organizationId || !args.projectId) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        'Both organizationId and projectId parameters are required'
+      );
+    }
+
+    const result = await this.xapiClient.getCatalogues(args.organizationId, args.projectId);
+    
+    if (result.success && result.data) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              success: true,
+              message: 'Catalogues retrieved successfully',
+              organizationId: args.organizationId,
+              projectId: args.projectId,
+              catalogues: result.data.map(catalogue => ({
+                id: catalogue.id,
+                name: catalogue.name,
+                description: catalogue.description,
+                version: catalogue.version,
+                status: catalogue.status,
+                createdOn: catalogue.createdOn,
+                modifiedOn: catalogue.modifiedOn,
+                rootCollectionId: catalogue.rootCollectionId
+              })),
+              count: result.data.length
+            }, null, 2)
+          }
+        ]
+      };
+    } else {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              success: false,
+              error: result.error || 'Failed to retrieve catalogues',
+              message: result.message,
+              organizationId: args.organizationId,
+              projectId: args.projectId
+            }, null, 2)
+          }
+        ]
+      };
+    }
+  }
+
+  private async handleGetApiDetails(args: any) {
+    if (!args || !args.organizationId || !args.projectId || !args.catalogueId || !args.collectionId) {
+      throw new McpError(
+        ErrorCode.InvalidParams,
+        'organizationId, projectId, catalogueId, and collectionId parameters are required'
+      );
+    }
+
+    const apiFilterParams = {
+      organizationId: args.organizationId,
+      projectId: args.projectId,
+      catalogueId: args.catalogueId,
+      collectionId: args.collectionId,
+      creators: args.creators || [],
+      collections: args.collections || [],
+      projects: args.projects || [],
+      page: args.page !== undefined ? args.page : 0,
+      size: args.size !== undefined ? args.size : 8
+    };
+
+    const result = await this.xapiClient.getApiDetails(apiFilterParams);
+    
+    if (result.success && result.data) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              success: true,
+              message: 'API details retrieved successfully',
+              filterParams: apiFilterParams,
+              pagination: {
+                totalElements: result.data.totalElements,
+                totalPages: result.data.totalPages,
+                size: result.data.size,
+                number: result.data.number,
+                first: result.data.first,
+                last: result.data.last
+              },
+              apis: result.data.content.map(api => ({
+                id: api.id,
+                name: api.name,
+                description: api.description,
+                version: api.version,
+                status: api.status
+              })),
+              count: result.data.content.length
+            }, null, 2)
+          }
+        ]
+      };
+    } else {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({
+              success: false,
+              error: result.error || 'Failed to retrieve API details',
+              message: result.message,
+              filterParams: apiFilterParams
             }, null, 2)
           }
         ]
